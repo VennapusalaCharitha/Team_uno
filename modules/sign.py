@@ -14,10 +14,6 @@ cap = cv2.VideoCapture(0)
 # Initialize FPS calculation
 prev_time = 0
 
-# Define the codec and create a VideoWriter object (optional)
-fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-out = cv2.VideoWriter('output.mp4', fourcc, 20.0, (int(cap.get(3)), int(cap.get(4))))
-
 try:
     while cap.isOpened():
         success, frame = cap.read()
@@ -37,9 +33,6 @@ try:
             # Display FPS on the frame
             cv2.putText(annotated_frame, f"FPS: {int(fps)}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
-            # Write the frame to the output video (optional)
-            out.write(annotated_frame)
-
             # Display the annotated frame
             cv2.imshow("Hand Sign Tracking", annotated_frame)
 
@@ -52,5 +45,4 @@ except KeyboardInterrupt:
     print("Program interrupted by user.")
 finally:
     cap.release()
-    out.release()  # Release the VideoWriter object (optional)
     cv2.destroyAllWindows()
