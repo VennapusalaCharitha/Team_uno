@@ -2,11 +2,19 @@
 function joinMeeting() {
   const meetingID = document.getElementById('meeting-id').value;
   const passcode = document.getElementById('passcode').value;
+  const userName = document.getElementById('user-name').value;
 
-  if (meetingID && passcode) {
+
+function isValidMeetingID(id) {
+  return /^[a-zA-Z0-9]{6,12}$/.test(id);
+  }
+    document.getElementById('loader').hidden = false;
+
+
+  if (meetingID && passcode && userName) {
     document.querySelector('.home-screen').hidden = true;
     document.querySelector('.meeting-screen').hidden = false;
-    alert(`Successfully Joined Meeting ${meetingID}`);
+    alert(`Successfully Joined Meeting ${meetingID} as ${userName}`);
   } else {
     alert("Please enter a valid Meeting ID and Passcode.");
   }

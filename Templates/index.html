@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Zoom-like App</title>
     <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
       rel="stylesheet"
       href="{{ url_for('static', filename='styles/style.css') }}"
     />
   </head>
   <body>
+    <div id="loader" class="loader" hidden></div>
+
     <div class="container">
       <header>
         <h1>DE-TALK</h1>
@@ -17,6 +23,14 @@
 
       <section class="home-screen">
         <h2>Join a Meeting</h2>
+        <input
+          type="text"
+          id="user-name"
+          placeholder="Enter Your Name"
+          aria-label="Enter display name"
+          required
+        />
+
         <input
           type="text"
           id="meeting-id"
@@ -50,21 +64,21 @@
             onclick="toggleMute()"
             aria-label="Mute audio"
           >
-            Mute
+            <i class="fas fa-microphone-slash"></i> Mute
           </button>
           <button
             id="video-button"
             onclick="toggleVideo()"
             aria-label="Turn off video"
           >
-            Turn off Video
+            <i class="fas fa-video-slash"></i> Turn off Video
           </button>
           <button
             id="leave-button"
             onclick="leaveMeeting()"
             aria-label="Leave meeting"
           >
-            Leave
+            <i class="fas fa-sign-out-alt"></i> Leave
           </button>
         </div>
       </section>
