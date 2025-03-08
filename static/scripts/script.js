@@ -1,3 +1,19 @@
+function speakText(text) {
+  const synth = window.speechSynthesis;
+  const utterance = new SpeechSynthesisUtterance(text);
+  
+  // Optional: Set voice, pitch, and rate
+  utterance.rate = 1; // Speed (0.1 to 10)
+  utterance.pitch = 1; // Pitch (0 to 2)
+  utterance.volume = 1; // Volume (0 to 1)
+  
+  // Speak the text
+  synth.speak(utterance);
+}
+
+// Example usage
+// speakText("Hello, how are you?");
+
 // Function to simulate joining a meeting
 function joinMeeting() {
   const meetingID = document.getElementById('meeting-id').value;
