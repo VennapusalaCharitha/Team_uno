@@ -183,3 +183,13 @@ button:focus {
         font-size: 2rem;
     }
 }
+
+/* Responsive for large screens */
+@media (min-width: 1200px) {
+    body {
+        background-size: cover, 300% 300%;
+        /* Slower gradient animation */
+        animation: gradientBackground 15s ease infinite;
+        /* Keep the animation */
+    }
+}
