@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 {% block title %}My Dashboard{% endblock %}
 {% block content %}
-    <h1><b>Welcome</b> {{ first_name }} {{ last_name }}</h1>
+
+    <img src="{{ url_for('static', filename='images/DeTalk.png') }}" alt="DeTalk Logo" class="img-fluid  mx-auto d-block" style="width: 100px; border-radius: 50%;"> <br>
+    <br>
+    <h2><b>Welcome</b> {{ first_name }} {{ last_name }}</h2>
     <hr>
 <!-- "Create or Join Meeting" button -->
     <div class="create-meeting-button">
-        <div class="button-container">
+    <p class="fw-bold mb-2 text-uppercase">Create or Join a Meeting</p> <br> <br>
+        <div class="button-container" style= "display: flex; justify-content: center; gap:5px;">
             <a class="btn btn-primary" href="{{ url_for('meeting') }}">Create Meeting</a>
             <a class="btn btn-primary" href="{{ url_for('join') }}">Join Meeting</a>
             <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Logout</a>
