@@ -6,7 +6,7 @@ function joinMeeting() {
   if (meetingID && passcode) {
     document.querySelector('.home-screen').hidden = true;
     document.querySelector('.meeting-screen').hidden = false;
-    alert(`Joined Meeting ${meetingID}`);
+    alert(`Successfully Joined Meeting ${meetingID}`);
   } else {
     alert("Please enter a valid Meeting ID and Passcode.");
   }
@@ -17,10 +17,10 @@ function toggleMute() {
   const muteButton = document.getElementById('mute-button');
   if (muteButton.innerText === "Mute") {
     muteButton.innerText = "Unmute";
-    alert("Muted");
+    alert("Audio Muted");
   } else {
     muteButton.innerText = "Mute";
-    alert("Unmuted");
+    alert("Audio Unmuted");
   }
 }
 
@@ -29,10 +29,10 @@ function toggleVideo() {
   const videoButton = document.getElementById('video-button');
   if (videoButton.innerText === "Turn off Video") {
     videoButton.innerText = "Turn on Video";
-    alert("Video turned off");
+    alert("Video Turned Off");
   } else {
     videoButton.innerText = "Turn off Video";
-    alert("Video turned on");
+    alert("Video Turned On");
   }
 }
 
@@ -42,7 +42,7 @@ function leaveMeeting() {
   if (confirmation) {
     document.querySelector('.meeting-screen').hidden = true;
     document.querySelector('.home-screen').hidden = false;
-    alert("Left the meeting");
+    alert("You have left the meeting");
   }
 }
 
@@ -65,7 +65,6 @@ recognition.onresult = function (event) {
   }
 };
 
-// Start voice recognition for commands
 function startVoiceRecognition() {
   recognition.start();
 }
@@ -74,9 +73,13 @@ function startVoiceRecognition() {
 window.onload = function() {
   const voiceButton = document.createElement('button');
   voiceButton.innerText = "Start Voice Command";
-  voiceButton.style.position = "fixed"; // Position fixed at the bottom-right
+  voiceButton.style.position = "fixed";
   voiceButton.style.bottom = "20px";
   voiceButton.style.right = "20px";
+  voiceButton.style.backgroundColor = "#2ecc71";
+  voiceButton.style.borderRadius = "5px";
+  voiceButton.style.padding = "12px 30px";
+  voiceButton.style.fontSize = "1rem";
   voiceButton.onclick = startVoiceRecognition;
   document.body.appendChild(voiceButton);
 };
