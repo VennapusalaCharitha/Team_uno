@@ -74,6 +74,9 @@ function startVoiceRecognition() {
 window.onload = function() {
   const voiceButton = document.createElement('button');
   voiceButton.innerText = "Start Voice Command";
+  voiceButton.style.position = "fixed"; // Position fixed at the bottom-right
+  voiceButton.style.bottom = "20px";
+  voiceButton.style.right = "20px";
   voiceButton.onclick = startVoiceRecognition;
   document.body.appendChild(voiceButton);
 };

@@ -1,39 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Zoom-like App</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/style.css') }}"
+    />
+  </head>
 
-<body>
+  <body>
     <div class="container">
-        <header>
-            <h1>DE-TALK</h1>
-        </header>
+      <header>
+        <h1>DE-TALK</h1>
+      </header>
 
-        <section class="home-screen">
-            <h2>Join a Meeting</h2>
-            <input type="text" id="meeting-id" placeholder="Enter Meeting ID" aria-label="Enter meeting ID" required />
-            <input type="password" id="passcode" placeholder="Enter Passcode" aria-label="Enter passcode" required />
-            <button id="join-button" onclick="joinMeeting()" aria-label="Join meeting">Join</button>
-        </section>
+      <section class="home-screen">
+        <h2>Join a Meeting</h2>
+        <input
+          type="text"
+          id="meeting-id"
+          placeholder="Enter Meeting ID"
+          aria-label="Enter meeting ID"
+          required
+        />
+        <input
+          type="password"
+          id="passcode"
+          placeholder="Enter Passcode"
+          aria-label="Enter passcode"
+          required
+        />
+        <button
+          id="join-button"
+          onclick="joinMeeting()"
+          aria-label="Join meeting"
+        >
+          Join
+        </button>
+      </section>
 
-        <section class="meeting-screen" aria-live="polite" hidden>
-            <div class="video-container" id="video-container">
-                <p>Video stream here</p>
-            </div>
-            <div class="controls">
-                <button id="mute-button" onclick="toggleMute()" aria-label="Mute audio">Mute</button>
-                <button id="video-button" onclick="toggleVideo()" aria-label="Turn off video">Turn off Video</button>
-                <button id="leave-button" onclick="leaveMeeting()" aria-label="Leave meeting">Leave</button>
-            </div>
-        </section>
+      <section class="meeting-screen" aria-live="polite" hidden>
+        <div class="video-container" id="video-container">
+          <p>Video stream here</p>
+        </div>
+        <div class="controls">
+          <button
+            id="mute-button"
+            onclick="toggleMute()"
+            aria-label="Mute audio"
+          >
+            Mute
+          </button>
+          <button
+            id="video-button"
+            onclick="toggleVideo()"
+            aria-label="Turn off video"
+          >
+            Turn off Video
+          </button>
+          <button
+            id="leave-button"
+            onclick="leaveMeeting()"
+            aria-label="Leave meeting"
+          >
+            Leave
+          </button>
+        </div>
+      </section>
     </div>
 
-    <script src="script.js"></script>
-</body>
-
+    <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
+  </body>
 </html>
