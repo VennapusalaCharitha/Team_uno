@@ -16,8 +16,11 @@
             {{ form.email.label}} {{ form.email(class = "form-control form-control-lg", id = "email", placeholder = "abc@xyz.com") }} <br>
             {{ form.username.label}} {{ form.username(class = "form-control form-control-lg", id = "username", placeholder = "User Name") }} <br>
             {{ form.password.label}} {{ form.password(class = "form-control form-control-lg", id = "password", placeholder = "********") }} <br>
-            {{ form.IsBlind.label }} {{ form.IsBlind(class_="form-control form-control-lg", id="IsBlind") }}
-
+            <label for="IsBlind">Are you blind?</label>
+            <select name="IsBlind" id="IsBlind" class="form-control form-control-lg">
+                <option value="1" {% if form.IsBlind.data == '1' %}selected{% endif %}>Yes</option>
+                <option value="0" {% if form.IsBlind.data == '0' %}selected{% endif %}>No</option>
+            </select>
             
         </div>
         <button class="btn btn-outline-light btn-lg px-5" type="submit">Register</button>

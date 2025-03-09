@@ -5,10 +5,10 @@
 </head>
 <body>
     <div style="display: flex; justify-content: center; align-items: top; height: 100vh;"> 
-    <div id="root"  style = "width: 95%; height: 80%"></div>
+    <div id="root"  style = "width: 100%; height: 100%"></div>
     </div>
-    <div id="captions" style="position:fixed; z-index: 100; display: flex; bottom:5%; justify-content: center; transform: translateY(-50%); width: 100%; background-color: #00000010; color: #fff; padding: 10px;">
-        <p id="transcript"></p>
+    <div id="captions" style="position:fixed; z-index: 100; display: flex; bottom:7%; width: 100%; justify-content: center;  color: #fff; padding: 10px;">
+        <p id="transcript" style="background-color: black; padding: 5px; box-sizing:content-box; font-weight: bold; font-size: large; border-radius: 10%; border: solid 1px white; max-width: 700px;"></p>
     </div>
 </body>
 <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
@@ -68,10 +68,12 @@
             .then(response => response.json())
             .then(data => {
                 if (data.transcript) {
-                    document.getElementById("transcript").innerText = data.transcript;
+                    speak(data.transcript);
+                    var text = "  Sign Captions --   " + data.transcript + "   -- Sign Captions  " ;
+                    document.getElementById("transcript").innerText = text;
                 } 
                 else {
-                    document.getElementById("transcript").innerText = " ";
+                    document.getElementById("transcript").innerText = "";
                 }
             })
             .catch(error => console.error("Error:", error));

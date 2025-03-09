@@ -20,7 +20,7 @@ try:
 
         if success:
             # Run YOLO inference on the frame
-            results = model.track(frame, persist=True, conf=0.5)
+            results = model.track(frame, persist=True, conf=0.65)
 
             # Calculate FPS
             curr_time = time.time()
