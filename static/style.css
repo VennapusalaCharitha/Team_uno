@@ -1,5 +1,5 @@
 body {
     background: #6a11cb;
-    background: -webkit-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 0.8));
-    background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 0.8));
+    background: -webkit-gradient(to right, rgb(203, 42, 17), rgba(252, 94, 37, 0.8));
+    background: linear-gradient(to right, rgb(203, 39, 17), rgba(252, 105, 37, 0.8));
 }

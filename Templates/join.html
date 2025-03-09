@@ -3,12 +3,13 @@
 
 {% block content %}
 <div class="container">
-        <h1 class="text-center mt-5">Join Meeting</h1>
+        <h1 onmouseover="speak(this)" class="text-center mt-5">Join Meeting</h1>
         <form method="POST" action="{{ url_for('join') }}" class="mt-4">
             <div class="form-group">
-                <input type="text" placeholder="Room ID:" class="form-control" id="roomID" name="roomID" required>
+                <input onmouseover="speak(this)" type="text" placeholder="Room ID:" class="form-control" id="roomID" name="roomID" required>
             </div>
-            <button type="submit" class="btn btn-primary btn-lg">Join</button>
+            <button onmouseover="speak(this)" type="submit" class="btn btn-primary btn-lg">Join</button>
         </form>
     </div>
+    
 {% endblock %}

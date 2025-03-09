@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, EmailField
+from wtforms import StringField, PasswordField, EmailField, SelectField
 from wtforms.validators import DataRequired, Length
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import login_user, LoginManager, login_required, current_user, logout_user
@@ -29,6 +29,7 @@ class Register(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
+    IsBlind = db.Column(db.Integer, nullable=False, default=0)
 
     def is_active(self):
         return True
@@ -50,6 +51,7 @@ class RegistrationForm(FlaskForm):
     last_name = StringField(label="Last Name", validators=[DataRequired()])
     username = StringField(label="Username", validators=[DataRequired(), Length(min=4, max=20)])
     password = PasswordField(label="Password", validators=[DataRequired(), Length(min=8, max=20)])
+    IsBlind = SelectField('Are you blind?', choices=[('yes', 'Yes'), ('no', 'No')], default='no')
 
 
 class LoginForm(FlaskForm):

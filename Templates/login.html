@@ -11,22 +11,31 @@
 {% endwith %}
 
 <div class="mb-md-2 mt-md-2 pb-5">
-    <img src="{{ url_for('static', filename='images/DeTalk.png') }}" alt="DeTalk Logo" class="img-fluid  mx-auto d-block" style="width: 100px; border-radius: 50%;"> <br>
-    <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
-    <p class="text-white-50 mb-5">Please enter your login and password</p>
+    <img onmouseover="speak(this)" src="{{ url_for('static', filename='images/DeTalk.png') }}" alt="DeTalk Logo" class="img-fluid mx-auto d-block" style="width: 100px; border-radius: 50%;"> <br>
+    
+    <h2 onmouseover="speak(this)" class="fw-bold mb-2 text-uppercase">Login</h2>
+    <p onmouseover="speak(this)" class="text-white-50 mb-5">Please enter your login and password</p>
 
     <form action="{{ url_for('login') }}" method="POST">
-    {{ form.csrf_token }}
-    {{ form.hidden_tag() }}
+        {{ form.csrf_token }}
+        {{ form.hidden_tag() }}
 
-    <div class="form-outline form-white mb-4">
-    {{ form.email.label }} {{ form.email(class="form-control form-control-lg", id="email", placeholder="Email") }}<br>
-    {{ form.password.label }} {{ form.password(class="form-control form-control-lg", id="password", placeholder="********") }}
-    </div>
-    <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
-</form>
+        <div class="form-outline form-white mb-4">
+            <label for="email" onmouseover="speak(this)">{{ form.email.label }}</label>
+            {{ form.email(onmouseover="speak(this)", class="form-control form-control-lg", id="email", placeholder="Enter Your Email") }}<br>
+
+            <label for="password" onmouseover="speak(this)">{{ form.password.label }}</label>
+            {{ form.password(onmouseover="speak(this)", class="form-control form-control-lg", id="password", placeholder="Enter your password") }}
+        </div>
+
+        <button onmouseover="speak(this)" class="btn btn-outline-light btn-lg px-5" type="submit" aria-label="Login to DeTalk">Login</button>
+    </form>
 </div>
 
-<div><p class="mb-0">New to DeTalk? <a href="{{ url_for('register') }}" class="text-white-50 fw-bold">Register</a></p> </div>
+<div>
+    <p onmouseover="speak(this)" class="mb-0">New to DeTalk? 
+        <a href="{{ url_for('register') }}" class="text-white-50 fw-bold" onmouseover="speak(this)" aria-label="Register on DeTalk">Register</a>
+    </p>
+</div>
 
 {% endblock %}
