@@ -5,6 +5,11 @@ from wtforms.validators import DataRequired, Length
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import login_user, LoginManager, login_required, current_user, logout_user
 import socket
+import os
+from ultralytics import YOLO
+import cv2
+import numpy as np
+import base64
 
 db = SQLAlchemy()
 app = Flask(__name__)
@@ -16,6 +21,10 @@ login_manager = LoginManager()
 login_manager.login_view = "login"
 login_manager.init_app(app)
 
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+current_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = "modules/best.pt"
+model = YOLO(model_path)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -125,6 +134,34 @@ def join():
         return redirect(f"/meeting?roomID={room_id}")
 
     return render_template("join.html")
+
+# API endpoint to process video frames
+@app.route("/process_frame", methods=["POST"])
+def process_frame():
+    try:
+        # Get base64-encoded image from the request
+        image_data = request.json.get("frame")
+        if not image_data:
+            return jsonify({"error": "No frame provided"}), 400
+
+        # Decode the image
+        header, encoded = image_data.split(",", 1)
+        binary_data = base64.b64decode(encoded)
+        image_np = np.frombuffer(binary_data, dtype=np.uint8)
+        frame = cv2.imdecode(image_np, cv2.IMREAD_COLOR)
+
+        # Run YOLO inference
+        results = model.track(frame, persist=True, conf=0.5)
+        annotated_frame = results[0].plot()
+
+        # Get detected classes
+        detected_classes = results[0].boxes.cls.tolist() if results[0].boxes else []
+        class_names = [model.names[int(cls)] for cls in detected_classes]
+
+        return jsonify({"transcript": " ".join(class_names)})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":
