@@ -38,7 +38,7 @@ class Register(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
-    IsBlind = db.Column(db.Integer, nullable=False, default=0)
+    IsBlind = db.Column(db.Integer, nullable=False)
 
     def is_active(self):
         return True
@@ -60,7 +60,7 @@ class RegistrationForm(FlaskForm):
     last_name = StringField(label="Last Name", validators=[DataRequired()])
     username = StringField(label="Username", validators=[DataRequired(), Length(min=4, max=20)])
     password = PasswordField(label="Password", validators=[DataRequired(), Length(min=8, max=20)])
-    IsBlind = SelectField('Are you blind?', choices=[('yes', 'Yes'), ('no', 'No')], default='no')
+    IsBlind = SelectField('Are you blind?', choices=[('1', 'Yes'), ('0', 'No')], default='0')
 
 
 class LoginForm(FlaskForm):
@@ -99,12 +99,15 @@ def logout():
 def register():
     form = RegistrationForm()
     if request.method == "POST" and form.validate_on_submit():
+        is_blind_value = bool(int(form.IsBlind.data)) 
+        print(f"IsBlind Value Submitted: {form.IsBlind.data}") 
         new_user = Register(
             email=form.email.data,
             first_name=form.first_name.data,
             last_name=form.last_name.data,
             username=form.username.data,
-            password=form.password.data
+            password=form.password.data,
+            IsBlind=is_blind_value 
         )
         db.session.add(new_user)
         db.session.commit()
