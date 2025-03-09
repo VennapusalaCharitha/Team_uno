@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify,session
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, EmailField, SelectField
 from wtforms.validators import DataRequired, Length
@@ -39,7 +39,7 @@ class Register(db.Model):
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
     IsBlind = db.Column(db.Integer, nullable=False)
-
+    
     def is_active(self):
         return True
 
@@ -80,11 +80,17 @@ def login():
         email = form.email.data
         password = form.password.data
         user = Register.query.filter_by(email=email, password=password).first()
+        
         if user:
+            if (session.get("IsBlind") == None):
+                session['IsBlind'] = user.IsBlind
             login_user(user)
             return redirect(url_for("dashboard"))
+        else:
+            flash("Wrong credentials. Please try again.", "danger")  # Flashing error message for incorrect login
 
     return render_template("login.html", form=form)
+
 
 
 @app.route("/logout", methods=["GET"])
@@ -99,28 +105,38 @@ def logout():
 def register():
     form = RegistrationForm()
     if request.method == "POST" and form.validate_on_submit():
-        is_blind_value = bool(int(form.IsBlind.data)) 
-        print(f"IsBlind Value Submitted: {form.IsBlind.data}") 
+        # Check if the email or username already exists
+        existing_user_email = Register.query.filter_by(email=form.email.data).first()
+        existing_user_username = Register.query.filter_by(username=form.username.data).first()
+
+        if existing_user_email:
+            flash("Email already exists. Please use a different email.", "danger")
+            return render_template("register.html", form=form)
+
+        if existing_user_username:
+            flash("Username already exists. Please choose a different username.", "danger")
+            return render_template("register.html", form=form)
+        session['IsBlind'] = form.IsBlind.data 
+        # Otherwise, create the new user without hashing the password
         new_user = Register(
             email=form.email.data,
             first_name=form.first_name.data,
             last_name=form.last_name.data,
             username=form.username.data,
-            password=form.password.data,
-            IsBlind=is_blind_value 
+            password=form.password.data,  
+            IsBlind=form.IsBlind.data 
         )
         db.session.add(new_user)
         db.session.commit()
-        flash("Account created Successfully! <br>You can now log in.", "success")
+        flash("Account created successfully! You can now log in.", "success")
         return redirect(url_for("login"))
 
     return render_template("register.html", form=form)
 
-
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html", first_name=current_user.first_name, last_name=current_user.last_name)
+    return render_template("dashboard.html", first_name=current_user.first_name, last_name=current_user.last_name, isBlind=current_user.IsBlind)
 
 
 @app.route("/meeting")

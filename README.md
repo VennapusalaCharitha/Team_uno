@@ -5,7 +5,7 @@ This project is a **Flask-based web application** designed to enable seamless co
 
 ## **Features**
 - ✅ User authentication (Login & Registration)
-- ✅ Web-based communication platform
+- ✅ Web-based communication platform with multi-modal input and output formats
 - 🚀 Sign language-to-text conversion (Planned)
 - 🔌 Zoom & Google Meet Plugin (Planned)
 
