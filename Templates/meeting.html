@@ -1,6 +1,7 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Meetings</title>
+    <title>DeTalk Meetings</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
         /* Basic loading animation */
@@ -35,15 +36,99 @@
             position: fixed;
             z-index: 100;
             display: flex;
-            bottom: 7%;
             width: 100%;
             justify-content: center;
             color: #fff;
             padding: 10px;
         }
 
+        #captions {
+            bottom: 100px;
+        }
+
         #speech-captions {
-            bottom: 2%; /* Display speech captions slightly above sign language captions */
+            bottom: 60px;
+        }
+
+        .transcript-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            max-height: 60vh;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 10px;
+            padding: 15px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .transcript-header {
+            text-align: center;
+            font-weight: bold;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .transcript-entry {
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .username {
+            font-weight: bold;
+            color: #4caf50;
+        }
+
+        .sign {
+            display: inline-block;
+            margin: 3px;
+            padding: 3px 6px;
+            background-color: rgba(76, 175, 80, 0.3);
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        .controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .control-btn {
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-right: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .control-btn.active {
+            background-color: #4caf50;
+        }
+
+        .control-btn:hover {
+            opacity: 0.9;
+        }
+
+        #video-canvas {
+            display: none;
         }
     </style>
 </head>
@@ -53,43 +138,75 @@
         <div class="loader"></div>
     </div>
 
+    <!-- Controls panel -->
+    <div class="controls">
+        <button id="sign-toggle" class="control-btn">Start Sign Detection</button>
+        <button id="speech-toggle" class="control-btn">Start Speech Recognition</button>
+        <button id="clear-transcript" class="control-btn">Clear Transcript</button>
+    </div>
+
+    <!-- Transcript panel -->
+    <div class="transcript-container">
+        <div class="transcript-header">Sign Language Transcript</div>
+        <div id="transcript-content"></div>
+    </div>
+
+    <!-- Main video container -->
     <div style="display: flex; justify-content: center; align-items: top; height: 100vh;">
         <div id="root" style="width: 100%; height: 100%"></div>
     </div>
 
-    <div id="captions" style="bottom:100px">
-        <p id="transcript" style="background-color: black; padding: 5px; box-sizing: content-box; font-weight: bold; font-size: large; border-radius: 10%; border: solid 1px white; max-width: 700px;"></p>
+    <!-- Caption areas -->
+    <div id="captions">
+        <p id="transcript" style="background-color: black; padding: 5px; box-sizing: content-box; font-weight: bold; font-size: large; border-radius: 10px; border: solid 1px white; max-width: 700px;"></p>
     </div>
     
-    <div id="speech-captions" style="bottom:60px">
-        <p id="speech-transcription" style="background-color: black; padding: 5px; box-sizing: content-box; font-weight: bold; font-size: large; border-radius: 10%; border: solid 1px white; max-width: 700px;"></p>
+    <div id="speech-captions">
+        <p id="speech-transcription" style="background-color: black; padding: 5px; box-sizing: content-box; font-weight: bold; font-size: large; border-radius: 10px; border: solid 1px white; max-width: 700px;"></p>
     </div>
 
+    <!-- Hidden canvas for video processing -->
+    <canvas id="video-canvas" width="640" height="480"></canvas>
+
+    <!-- Socket.IO client -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    
+    <!-- Zego UI Kit script -->
     <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
+    
     <script>
         window.onload = function () {
             // Hide loading animation once the page has loaded
             document.getElementById('loading').style.display = 'none';
 
-            // Web Speech API for speech-to-text
-            if (!('webkitSpeechRecognition' in window)) {
-                alert("Your browser does not support the Web Speech API. Please use Chrome or Edge.");
-            } else {
-                const recognition = new webkitSpeechRecognition();
-                recognition.continuous = true; // Keep listening
-                recognition.interimResults = true; // Show interim results
-                recognition.lang = 'en-US'; // Set language to English
+            // Get elements
+            const signToggleBtn = document.getElementById('sign-toggle');
+            const speechToggleBtn = document.getElementById('speech-toggle');
+            const clearTranscriptBtn = document.getElementById('clear-transcript');
+            const transcriptContent = document.getElementById('transcript-content');
+            const speechTranscription = document.getElementById('speech-transcription');
+            const mainTranscript = document.getElementById('transcript');
+            const videoCanvas = document.getElementById('video-canvas');
+            const ctx = videoCanvas.getContext('2d');
 
-                // Get DOM elements for speech transcription
-                const speechTranscription = document.getElementById('speech-transcription');
+            // Initialize socket connection
+            const socket = io();
+            const roomID = getUrlParams(window.location.href)['roomID'] || (Math.floor(Math.random() * 10000) + "");
+            socket.emit('join', {room: roomID});
 
-                // Start recognition when the video call starts
-                let isMeetingStarted = false;
+            // Initialize variables for sign language detection
+            let isSignDetectionActive = false;
+            let signDetectionInterval;
 
-                function startSpeechRecognition() {
-                    recognition.start();
-                    speechTranscription.textContent = "Listening for speech...";
-                }
+            // Initialize variables for speech recognition
+            let isSpeechRecognitionActive = false;
+            let recognition;
+            
+            if ('webkitSpeechRecognition' in window) {
+                recognition = new webkitSpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'en-US';
 
                 // Handle results from speech recognition
                 recognition.onresult = (event) => {
@@ -97,100 +214,295 @@
                     for (let i = event.resultIndex; i < event.results.length; i++) {
                         transcript += event.results[i][0].transcript;
                     }
-                    speechTranscription.textContent = transcript;
+                    speechTranscription.textContent = "Speech Captions : " + transcript;
+                    
+                    // Add to transcript if final result and not empty
+                    if (event.results[event.resultIndex].isFinal && transcript.trim()) {
+                        addTranscriptEntry({
+                            timestamp: getCurrentTimestamp(),
+                            user: "{{username}}",
+                            type: "speech",
+                            content: transcript.trim()
+                        });
+                    }
                 };
 
                 // Handle errors
                 recognition.onerror = (event) => {
-                    console.error("Error occurred:", event.error);
-                    speechTranscription.textContent = "Error: " + event.error;
+                    console.error("Speech Recognition Error:", event.error);
+                    
+                    // Restart recognition if an error occurs
+                    if (isSpeechRecognitionActive && (event.error === 'no-speech' || event.error === 'audio-capture')) {
+                        recognition.stop();
+                        setTimeout(() => {
+                            if (isSpeechRecognitionActive) {
+                                recognition.start();
+                            }
+                        }, 1000);
+                    }
                 };
 
                 // Handle end of recognition
                 recognition.onend = () => {
-                    speechTranscription.textContent = "Recording stopped.";
-                };
-
-                function getUrlParams(url) {
-                    let urlStr = url.split('?')[1];
-                    const urlSearchParams = new URLSearchParams(urlStr);
-                    return Object.fromEntries(urlSearchParams.entries());
-                }
-
-                const roomID = getUrlParams(window.location.href)['roomID'] || (Math.floor(Math.random() * 10000) + "");
-                const userID = Math.floor(Math.random() * 10000) + "";
-                const userName = "{{username}}";
-                const appID = 922435240;
-                const serverSecret = "10ba5f5065a32112f58e459aed99e5c0";
-                const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName);
-                const zp = ZegoUIKitPrebuilt.create(kitToken);
-
-                // Initialize meeting room
-                zp.joinRoom({
-                    container: document.querySelector("#root"),
-                    sharedLinks: [{
-                        name: 'Personal link',
-                        url: window.location.protocol + '//' + window.location.host + window.location.pathname + '?roomID=' + roomID,
-                    }],
-                    scenario: { mode: ZegoUIKitPrebuilt.VideoConference },
-                    turnOnMicrophoneWhenJoining: true,
-                    turnOnCameraWhenJoining: true,
-                    showMyCameraToggleButton: true,
-                    showMyMicrophoneToggleButton: true,
-                    showScreenSharingButton: true,
-                    onMeetingStarted: () => {
-                        isMeetingStarted = true;
-                        startSpeechRecognition(); // Start speech recognition once the meeting starts
+                    if (isSpeechRecognitionActive) {
+                        recognition.start(); // Restart if still active
                     }
-                });
-
-                function speakTxt(textInput) {
-                    let text = textInput.trim();
-                    if (!text) return;
-
-                    let speech = new SpeechSynthesisUtterance(text);
-                    speech.lang = "en-US";
-                    speech.rate = 1;
-                    speech.pitch = 1;
-
-                    window.speechSynthesis.speak(speech);
-                }
-
-                // Capture frames from the video element and send to backend
-                setInterval(() => {
-                    const videoElements = document.querySelectorAll('video');
-                    if (videoElements.length === 0) return;
-
-                    // Capture the first video element (modify to handle multiple participants)
-                    const video = videoElements[0];
-                    const canvas = document.createElement('canvas');
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-                    // Convert canvas to base64
-                    const imageData = canvas.toDataURL('image/jpeg');
-
-                    // Send frame to backend for processing
-                    fetch("/process_frame", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ frame: imageData }),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.transcript) {
-                            speakTxt(data.transcript);
-                            var text = `Sign Captions -- "${data.transcript}" -- Sign Captions`;
-                            document.getElementById("transcript").innerText = text;
-                        } else {
-                            document.getElementById("transcript").innerText = "";
-                        }
-                    })
-                    .catch(error => console.error("Error:", error));
-                }, 1000); // Set frame rate
+                };
+            } else {
+                speechToggleBtn.disabled = true;
+                speechToggleBtn.textContent = "Speech Recognition Not Supported";
+                alert("Your browser does not support the Web Speech API. Please use Chrome or Edge.");
             }
+
+            // Toggle sign language detection
+            signToggleBtn.addEventListener('click', () => {
+                if (isSignDetectionActive) {
+                    stopSignDetection();
+                } else {
+                    startSignDetection();
+                }
+            });
+
+            // Toggle speech recognition
+            speechToggleBtn.addEventListener('click', () => {
+                if (isSpeechRecognitionActive) {
+                    stopSpeechRecognition();
+                } else {
+                    startSpeechRecognition();
+                }
+            });
+
+            // Clear transcript
+            clearTranscriptBtn.addEventListener('click', () => {
+                transcriptContent.innerHTML = '';
+                mainTranscript.textContent = '';
+                speechTranscription.textContent = '';
+            });
+
+            // Start sign language detection
+            function startSignDetection() {
+                isSignDetectionActive = true;
+                signToggleBtn.textContent = 'Stop Sign Detection';
+                signToggleBtn.classList.add('active');
+                
+                // Start capturing frames
+                signDetectionInterval = setInterval(() => {
+                    captureVideoFrame();
+                }, 1000); // Capture every second
+            }
+
+            // Stop sign language detection
+            function stopSignDetection() {
+                isSignDetectionActive = false;
+                signToggleBtn.textContent = 'Start Sign Detection';
+                signToggleBtn.classList.remove('active');
+                clearInterval(signDetectionInterval);
+                mainTranscript.textContent = '';
+            }
+
+            // Start speech recognition
+            function startSpeechRecognition() {
+                if (!recognition) return;
+                
+                isSpeechRecognitionActive = true;
+                speechToggleBtn.textContent = 'Stop Speech Recognition';
+                speechToggleBtn.classList.add('active');
+                recognition.start();
+                speechTranscription.textContent = "Listening for speech...";
+            }
+
+            // Stop speech recognition
+            function stopSpeechRecognition() {
+                if (!recognition) return;
+                
+                isSpeechRecognitionActive = false;
+                speechToggleBtn.textContent = 'Start Speech Recognition';
+                speechToggleBtn.classList.remove('active');
+                recognition.stop();
+                speechTranscription.textContent = '';
+            }
+
+            // Capture video frame
+            function captureVideoFrame() {
+                const videoElements = document.querySelectorAll('video');
+                if (videoElements.length === 0) return;
+
+                // Capture the first video element (modify to handle multiple participants)
+                const video = videoElements[0];
+                if (!video || !video.videoWidth) return;
+                
+                videoCanvas.width = video.videoWidth;
+                videoCanvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0, videoCanvas.width, videoCanvas.height);
+
+                // Convert canvas to base64
+                const imageData = videoCanvas.toDataURL('image/jpeg', 0.7);
+
+                // Send frame to backend for processing
+                fetch("/process_frame", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        frame: imageData,
+                        roomID: roomID
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.transcript) {
+                        speakTxt(data.transcript);
+                        const text = `Sign Captions -- "${data.transcript}" -- Sign Captions`;
+                        mainTranscript.innerText = text;
+                        
+                        // Add to transcript
+                        addTranscriptEntry({
+                            timestamp: getCurrentTimestamp(),
+                            user: "{{username}}",
+                            type: "sign",
+                            content: data.transcript
+                        });
+                    } else if (data.detected && data.detected.length > 0) {
+                        const signs = data.detected.map(sign => sign.sign);
+                        const transcriptText = signs.join(", ");
+                        speakTxt(transcriptText);
+                        const text = `Sign Captions -- "${transcriptText}" -- Sign Captions`;
+                        mainTranscript.innerText = text;
+                        
+                        // Add to transcript with detected signs
+                        addTranscriptEntry({
+                            timestamp: getCurrentTimestamp(),
+                            user: "{{username}}",
+                            type: "sign",
+                            signs: data.detected
+                        });
+                    } else {
+                        mainTranscript.innerText = "";
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            }
+
+            // Text-to-speech function
+            function speakTxt(textInput) {
+                let text = textInput.trim();
+                if (!text || window.speechSynthesis.speaking) return;
+
+                let speech = new SpeechSynthesisUtterance(text);
+                speech.lang = "en-US";
+                speech.rate = 1;
+                speech.pitch = 1;
+
+                window.speechSynthesis.speak(speech);
+            }
+
+            // Helper function to get URL parameters
+            function getUrlParams(url) {
+                let urlStr = url.split('?')[1];
+                if (!urlStr) return {};
+                const urlSearchParams = new URLSearchParams(urlStr);
+                return Object.fromEntries(urlSearchParams.entries());
+            }
+
+            // Helper function to get current timestamp
+            function getCurrentTimestamp() {
+                const now = new Date();
+                return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            }
+
+            // Add entry to transcript display
+            function addTranscriptEntry(entry) {
+                const entryDiv = document.createElement('div');
+                entryDiv.className = 'transcript-entry';
+                
+                const timestampSpan = document.createElement('span');
+                timestampSpan.className = 'timestamp';
+                timestampSpan.textContent = entry.timestamp;
+                
+                const usernameSpan = document.createElement('span');
+                usernameSpan.className = 'username';
+                usernameSpan.textContent = ' ' + entry.user + ' ';
+                
+                const typeSpan = document.createElement('span');
+                typeSpan.style.fontSize = '12px';
+                typeSpan.style.color = '#aaa';
+                typeSpan.textContent = entry.type === 'sign' ? ' [sign] ' : ' [speech] ';
+                
+                entryDiv.appendChild(timestampSpan);
+                entryDiv.appendChild(usernameSpan);
+                entryDiv.appendChild(typeSpan);
+                
+                if (entry.type === 'sign' && entry.signs) {
+                    // Add detected signs
+                    entry.signs.forEach(signData => {
+                        const signSpan = document.createElement('span');
+                        signSpan.className = 'sign';
+                        signSpan.textContent = signData.sign;
+                        entryDiv.appendChild(signSpan);
+                    });
+                } else {
+                    // Add content as text
+                    const contentP = document.createElement('p');
+                    contentP.textContent = entry.content;
+                    contentP.style.margin = '5px 0 0 0';
+                    entryDiv.appendChild(contentP);
+                }
+                
+                transcriptContent.appendChild(entryDiv);
+                
+                // Scroll to bottom
+                transcriptContent.scrollTop = transcriptContent.scrollHeight;
+            }
+
+            // Listen for real-time transcript updates from other users
+            socket.on('transcript_update', (entry) => {
+                addTranscriptEntry(entry);
+            });
+
+            // Initialize Zego meeting room
+            const userID = Math.floor(Math.random() * 10000) + "";
+            const userName = "{{username}}";
+            const appID = 922435240;
+            const serverSecret = "10ba5f5065a32112f58e459aed99e5c0";
+            const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName);
+            const zp = ZegoUIKitPrebuilt.create(kitToken);
+            
+            zp.joinRoom({
+                container: document.querySelector("#root"),
+                sharedLinks: [{
+                    name: 'Personal link',
+                    url: window.location.protocol + '//' + window.location.host + window.location.pathname + '?roomID=' + roomID,
+                }],
+                scenario: { mode: ZegoUIKitPrebuilt.VideoConference },
+                turnOnMicrophoneWhenJoining: true,
+                turnOnCameraWhenJoining: true,
+                showMyCameraToggleButton: true,
+                showMyMicrophoneToggleButton: true,
+                showAudioVideoSettingsButton: true,
+                showScreenSharingButton: true,
+                showTextChat: true,
+                showUserList: true,
+                maxUsers: 2,
+                layout: "Auto",
+                showLayoutButton: false,
+                onMeetingStarted: () => {
+                    // Auto-start detection if needed
+                    // startSignDetection();
+                    // startSpeechRecognition();
+                    
+                    // Fetch existing transcript
+                    fetch(`/get_transcript/${roomID}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Add transcript entries
+                            data.forEach(entry => {
+                                addTranscriptEntry(entry);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching transcript:', error);
+                        });
+                }
+            });
         };
     </script>
 </body>
