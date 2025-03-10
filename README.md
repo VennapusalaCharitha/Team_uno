@@ -73,7 +73,7 @@ deactivate
 - 📹 Integration with Zoom & Google Meet as plugins
 - 🌍 Multilingual sign language support
 
-### For more infor on this project : [Click Here] (https://docs.google.com/presentation/d/1VOm9DjBjWfPdgVVm_a4vRC1LXsjxXJi9orY-LLXJryA/edit?usp=sharing)
+### For more infor on this project : [Click Here](https://docs.google.com/presentation/d/1VOm9DjBjWfPdgVVm_a4vRC1LXsjxXJi9orY-LLXJryA/edit?usp=sharing)
 
 
 ## Contributors
