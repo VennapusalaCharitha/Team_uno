@@ -1,5 +1,5 @@
 # Team-UNO
-# DeTalk** - Debug Talk
+# DeTalk - Debug Talk
 
 This project is a **Flask-based web application** designed to enable seamless communication for people with disabilities, particularly those who are **visually impaired, speech impaired, or deaf**. The platform aims to **convert sign language into text and speech**, ensuring accessibility for all users.
 
