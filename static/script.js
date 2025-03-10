@@ -1,7 +1,7 @@
 function speak(element) {
   // Ensure sessionStorage is available
   if (typeof sessionStorage !== "undefined") {
-    const isBlindValue = sessionStorage.getItem('IsBlind') ;
+    const isBlindValue = sessionStorage.getItem('IsBlind') || "1" ;
     // Check if IsBlind is set to "1" (blind user)
     if (isBlindValue === "1") {
       let text = element.innerText || element.getAttribute("aria-label") || element.placeholder || element.value;

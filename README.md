@@ -25,16 +25,40 @@ source .venv/bin/activate   # macOS/Linux
 # OR  
 .venv\Scripts\activate      # Windows  
 ```
+### **2. Set Up a ZeGoCloud Variables**
+#### Change the AppId and ServerSecret variables in Meeting.html file under "Initialize Zego meeting room"
 
+Get ZegoCloud API Keys from: https://bit.ly/3PNjNTW
+- select on UI webkit for web
+  
 ### **3. Install Dependencies**
 ```bash
 pip install -r requirements.txt
+
+```
+### **4. Go to the project directory**
+```bash
+cd Team_uno
 ```
 
-### **4. Run the Flask Application**
+### **5. Run the Flask Application**
 ```bash
 python app.py
 ```
+Or
+
+###  Go to the Modules directory**
+```bash
+cd Team_uno
+cd modules
+```
+
+###  Run the Sign recognition Application**
+```bash
+python sign.py
+```
+
+To just run the speech recognition software.
 
 By default, the application will run on **http://127.0.0.1:5000/**. Open your browser and visit the link.
 
