@@ -16,7 +16,7 @@ This project is a **Flask-based web application** designed to enable seamless co
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-repo/team-uno.git
+git clone https://github.com/VennapusalaCharitha/Team_uno.git
 cd team-uno
 ```
 
