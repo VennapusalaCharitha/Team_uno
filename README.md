@@ -40,20 +40,17 @@ Get ZegoCloud API Keys from: https://bit.ly/3PNjNTW
 pip install -r requirements.txt
 
 ```
-### 5. Go to the project directory
-```bash
-cd Team_uno
-```
 
-### 6. Run the Flask Application
+### 5. Run the Flask Application
 ```bash
 python app.py
 ```
 Or
 
-###  Go to the Modules directory
+####To just run the speech recognition software.
+
+### 6.Go to the Modules directory
 ```bash
-cd Team_uno
 cd modules
 ```
 
@@ -61,8 +58,6 @@ cd modules
 ```bash
 python sign.py
 ```
-
-To just run the speech recognition software.
 
 By default, the application will run on **http://127.0.0.1:5000/**. Open your browser and visit the link.
 
