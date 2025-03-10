@@ -14,8 +14,12 @@ This project is a **Flask-based web application** designed to enable seamless co
 ## Installation & Setup
 
 ### 1. Clone the Repository
+
+```bash
 git clone https://github.com/your-repo/team-uno.git
 cd team-uno
+```
+
 
 
 ### 2. Set Up a Virtual Environment
