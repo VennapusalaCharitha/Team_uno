@@ -74,13 +74,13 @@ deactivate
 - 🌍 Multilingual sign language support
 
 ## Contributors
-👤 **Deepak Sarun Yuvachandran** | Backend/WebRTC <br>
+👤 [Deepak Sarun Yuvachandran](https://github.com/DeeapakSarun) | Backend/API integeration<br>
 📧 Contact: dyuvachandran@slu.edu 
 
-👤 **Charita Vennapusala** | Frontend/UI <br>
+👤 [Charita Vennapusala](https://github.com/VennapusalaCharitha) | Frontend/UI <br>
 📧 Contact: cvennapusala@slu.edu  
 
-👤 **Jagruth Reddy Palle** | ML/Backend  <br>
-📧 Contact: jpalle1@slu.edu 
+👤 [Jagruth Reddy Palle](https://github.com/jagruthreddy) | ML/Backend <br>
+📧 Contact: jpalle1@slu.edu  
 
 
