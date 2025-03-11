@@ -208,7 +208,6 @@
                 recognition.interimResults = true;
                 recognition.lang = 'en-US';
 
-
                 // Handle results from speech recognition
                 recognition.onresult = (event) => {
                     let transcript = '';
@@ -462,7 +461,7 @@
             // Initialize Zego meeting room
             const userID = Math.floor(Math.random() * 10000) + "";
             const userName = "{{username}}";
-            const appID = " Your Zego App ID";
+            const appID = "Your Zego App ID";
             const serverSecret = "Your Zego Server Secret";
             const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName);
             const zp = ZegoUIKitPrebuilt.create(kitToken);
