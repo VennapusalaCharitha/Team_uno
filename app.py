@@ -181,6 +181,11 @@ def process_frame():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
+#vercel
+def handler(request, *args, **kwargs):
+    return app(request.environ, *args, **kwargs)
 
 
 if __name__ == "__main__":
