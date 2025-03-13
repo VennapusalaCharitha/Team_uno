@@ -1,5 +1,127 @@
 body {
-    background: #6a11cb;
-    background: -webkit-gradient(to right, rgb(203, 42, 17), rgba(252, 94, 37, 0.8));
-    background: linear-gradient(to right, rgb(203, 39, 17), rgba(252, 105, 37, 0.8));
+    background: 
+        radial-gradient(circle at 10% 10%, #ee7752, #ffcc00),
+        radial-gradient(circle at 30% 30%, #e73c7e, #ff3399),
+        radial-gradient(circle at 50% 50%, #23a6d5, #1abc9c),
+        radial-gradient(circle at 70% 70%, #23d5ab, #9b59b6),
+        radial-gradient(circle at 90% 90%, #8e44ad, #f39c12),
+        radial-gradient(circle at 20% 60%, #e74c3c, #23d5ab),
+        radial-gradient(circle at 60% 20%, #3498db, #2ecc71),
+        radial-gradient(circle at 80% 40%, #f39c12, #9b59b6),
+        radial-gradient(circle at 40% 80%, #16a085, #f1c40f),
+        radial-gradient(circle at 60% 10%, #d35400, #2c3e50);
+    background-size: 300% 300%;
+    background-blend-mode: soft-light;
+    animation: gradientSplash 15s ease-in-out infinite;
+    height: 100vh;
+    margin: 0;
 }
+
+@keyframes gradientSplash {
+    0% {
+        background-position: 50% 50%;
+        background-size: 300% 300%;
+    }
+    10% {
+        background-position: 60% 60%;
+        background-size: 350% 350%;
+    }
+    20% {
+        background-position: 70% 40%;
+        background-size: 400% 400%;
+    }
+    30% {
+        background-position: 50% 30%;
+        background-size: 450% 450%;
+    }
+    40% {
+        background-position: 30% 50%;
+        background-size: 500% 500%;
+    }
+    50% {
+        background-position: 60% 80%;
+        background-size: 450% 450%;
+    }
+    60% {
+        background-position: 80% 70%;
+        background-size: 400% 400%;
+    }
+    70% {
+        background-position: 50% 60%;
+        background-size: 350% 350%;
+    }
+    80% {
+        background-position: 30% 40%;
+        background-size: 300% 300%;
+    }
+    90% {
+        background-position: 50% 50%;
+        background-size: 350% 350%;
+    }
+    100% {
+        background-position: 50% 50%;
+        background-size: 300% 300%;
+    }
+}
+
+/* Slide-in animation */
+@keyframes slideInLeft {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInUp {
+    0% {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Slide-in animation */
+@keyframes slideIn {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Apply fade-in effect */
+.fade-in {
+    animation: fadeIn 2s ease-in-out forwards;
+}
+

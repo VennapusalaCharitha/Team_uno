@@ -68,9 +68,9 @@ class LoginForm(FlaskForm):
     password = PasswordField(label="Password", validators=[DataRequired()])
 
 
-@app.route("/")
-def home():
-    return redirect(url_for("login"))
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 
 @app.route("/login", methods=["POST", "GET"])
