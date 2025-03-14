@@ -18,6 +18,7 @@ git clone https://github.com/VennapusalaCharitha/Team_uno.git
 cd team-uno
 ```
 
+
 ### 2. Set Up a Virtual Environment
 
 ```bash
@@ -75,7 +76,7 @@ deactivate
 
 ## Future Improvements
 
-- 🧠 AI-based sign language recognition using **MediaPipe** or **TensorFlow**
+- 🧠 AI-based sign language recognition using MediaPipe or TensorFlow
 - 📢 Text-to-speech & speech-to-text support
 - 📹 Integration with Zoom & Google Meet as plugins
 - 🌍 Multilingual sign language support
