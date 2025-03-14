@@ -32,7 +32,7 @@ source .venv/bin/activate   # macOS/Linux
 
 #### Change the AppId and ServerSecret variables in Meeting.html file under "Initialize Zego meeting room"
 
-Get ZegoCloud API Keys from: https://bit.ly/3PNjNTW
+Get ZegoCloud API Keys from: [HERE](https://shorturl.at/vVnCB)
 select on UI webkit for web
   
 ### 4. Install Dependencies
