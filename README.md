@@ -82,6 +82,10 @@ deactivate
 
 ### For more infor on this project : [Click Here](https://docs.google.com/presentation/d/1VOm9DjBjWfPdgVVm_a4vRC1LXsjxXJi9orY-LLXJryA/edit?usp=sharing)
 
+## License
+
+[MIT License](LICENSE)
+
 ## Contributors
 
 👤 [Deepak Sarun Yuvachandran](https://github.com/DeeapakSarun) | Backend/API integeration <br>
