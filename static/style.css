@@ -47,6 +47,6 @@ body {
 
 /* Apply fade-in effect */
 .fade-in {
-    animation: fadeIn 2s ease-in-out forwards;
+    animation: fadeIn 1s ease-in-out forwards;
 }
 
