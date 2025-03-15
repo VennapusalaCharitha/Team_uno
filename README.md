@@ -18,7 +18,6 @@ git clone https://github.com/VennapusalaCharitha/Team_uno.git
 cd team-uno
 ```
 
-
 ### 2. Set Up a Virtual Environment
 
 ```bash
