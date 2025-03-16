@@ -27,12 +27,12 @@ source .venv/bin/activate   # macOS/Linux
 .venv\Scripts\activate      # Windows  
 ```
 
-### 3. Set Up a ZeGoCloud Variables
+### 3. Set Up ZeGoCloud Variables
 
 #### Change the AppId and ServerSecret variables in Meeting.html file under "Initialize Zego meeting room"
 
-Get ZegoCloud API Keys from: [HERE](https://shorturl.at/vVnCB)
-select on UI webkit for web
+Get ZegoCloud API Keys from [HERE](https://shorturl.at/vVnCB)
+Select on UI webkit for web
   
 ### 4. Install Dependencies
 
